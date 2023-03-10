@@ -43,6 +43,16 @@ if (isset($_POST['add_category'])) {
     $name = $_POST['name'];
     $status = $_POST['status'];
     $categories = $_SESSION['categories'];
+    $name_exists = false;
+    foreach ($categories as $key) {
+        if($key['name'] == $name | $key['code'] == $code){
+            $name_exists = true;
+        }
+    }
+    if($name_exists){
+        echo '<div style="background-color: #f2dede;border: 1px solid #ebccd1;padding: 10px;margin-bottom: 10px;">
+        Thể loại đã tồn tại, không thể thêm mới</div>';
+    }else{
     $new_category = array(
         'id' => $id,
         'code' => $code,
@@ -53,6 +63,7 @@ if (isset($_POST['add_category'])) {
     $_SESSION['categories'] = $categories;
     echo '<div style="background-color: #dff0d8;border: 1px solid #d6e9c6;padding: 10px;margin-bottom: 10px;">
     Thêm thể loại thành công</div>';
+}
 }
 
 // Xóa thể loại
@@ -153,6 +164,7 @@ if (isset($_POST['edit_category'])) {
                 <th>Trạng thái</th>
                 <th>Xóa</th>
                 <th>Sửa</th>
+                <th>Chi tiết sách</th>
             </tr>
             <?php foreach ($_SESSION['categories'] as $key) { ?>
                 <tr>
@@ -172,6 +184,12 @@ if (isset($_POST['edit_category'])) {
                             <button type="submit" name="edit_category">Sửa</button>
                         </form>
                     </td>
+                    <td>
+                    <form method="post" action="chitietsach.php">
+                        <input type="hidden" name="category_name" value="<?= $key['name'] ?>">
+                        <button type="submit" name="view_books">Chi tiết sách</button>
+                    </form>
+                </td>
                 </tr>
             <?php } ?>
         </table>
