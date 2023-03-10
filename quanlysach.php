@@ -30,23 +30,25 @@ if (isset($_POST['keyword'])) {
         }
     }
     if (count($kq) > 0) {
-        echo '<h3>Kết quả tìm kiếm:</h3>';
-        echo '<ul>';
+        echo '<h3 style="text-align: center;"> Kết quả tìm kiếm: </h3>';
+        echo '<table>';
+        echo '<thead>';
+        echo '<tr><th>Tên thể loại</th><th>Tên sách</th><th>Tên tác giả</th><th>Ngày phát hành</th></tr>';
+        echo '</thead>';
+        echo '<tbody>';
         foreach ($kq as $b) {
-            echo '<li>';
-            echo 'ID: ' . $b['TheLoaiSach'] . '<br>';
-            echo '<li>';
-            echo 'Mã thể loại: ' . $b['TenSach'] . '<br>';
-            echo '<li>';
-            echo 'Tên thể loại: ' . $b['TenTacGia'] . '<br>';
-            echo '<li>';
-            echo 'Trạng thái: ' . $b['NgayPhatHanh']->format('d-m-Y') . '<br>';
-            echo '</li>';
+            echo '<tr>';
+            echo '<td>' . $b['TheLoaiSach'] . '</td>';
+            echo '<td>' . $b['TenSach'] . '</td>';
+            echo '<td>' . $b['TenTacGia'] . '</td>';
+            echo '<td>' . $b['NgayPhatHanh']->format('d-m-Y') . '</td>';
+            echo '</tr>';
         }
-        echo '</ul>';
+        echo '</tbody>';
+        echo '</table>';
     } else {
         echo '<span style="background-color: yellow; font-weight: bold;">
-        Không tìm thấy kết quả '. $keyword . ' phù hợp</span>';
+        Không tìm thấy kết quả ' . $keyword . ' phù hợp</span>';
     }
 }
 
@@ -56,26 +58,26 @@ if (isset($_POST['ngay_bat_dau']) && isset($_POST['ngay_ket_thuc'])) {
     $ngay_ket_thuc = date_create($_POST['ngay_ket_thuc']);
     $kq = array();
     foreach ($_SESSION['arrSach'] as $b) {
-        $ngayphathanh = $b['NgayPhatHanh'];
-        if ($ngayphathanh >= $ngay_bat_dau && $ngayphathanh <= $ngay_ket_thuc) {
+        $ngay_phat_hanh = $b['NgayPhatHanh'];
+        if ($ngay_phat_hanh >= $ngay_bat_dau && $ngay_phat_hanh <= $ngay_ket_thuc) {
             $kq[] = $b;
         }
     }
     if (count($kq) > 0) {
-        echo "<h3> Kết quả tìm kiếm: </h3>";
-        echo '<ul>';
+        echo '<h3 style="text-align: center;"> Kết quả tìm kiếm: </h3>';
+        echo '<table>';
+        echo '<thead><tr><th>Tên thể loại</th><th>Tên sách</th><th>Tên tác giả</th><th>Ngày phát hành</th></tr></thead>';
+        echo '<tbody>';
         foreach ($kq as $b) {
-            echo '<li>';
-            echo 'Tên thể loại: ' . $b['TheLoaiSach'] . '<br>';
-            echo '<li>';
-            echo 'Tên sách: ' . $b['TenSach'] . '<br>';
-            echo '<li>';
-            echo 'Tên tác giả: ' . $b['TenTacGia'] . '<br>';
-            echo '<li>';
-            echo 'Ngày phát hành: ' . $b['NgayPhatHanh']->format('d-m-Y') . '<br>';
-            echo '</li>';
+            echo '<tr>';
+            echo '<td>' . $b['TheLoaiSach'] . '</td>';
+            echo '<td>' . $b['TenSach'] . '</td>';
+            echo '<td>' . $b['TenTacGia'] . '</td>';
+            echo '<td>' . $b['NgayPhatHanh']->format('d-m-Y') . '</td>';
+            echo '</tr>';
         }
-        echo '</ul>';
+        echo '</tbody>';
+        echo '</table>';
     } else {
         echo '<span style="background-color: yellow; font-weight: bold;">
         Trong khoảng thời gian này không có sách nào được phát hành.</span>';
@@ -90,17 +92,30 @@ if (isset($_POST['add_book'])) {
     $tentacgia = $_POST['tentacgia'];
     $ngayphathanh = date_create($_POST['ngayphathanh']);
     $books = $_SESSION['arrSach'];
-    $new_book = array(
-        'id' => $id,
-        'TheLoaiSach' => $tentheloai,
-        'TenSach' => $tensach,
-        'TenTacGia' => $tentacgia,
-        'NgayPhatHanh' => $ngayphathanh
-    );
-    $books[] = $new_book;
-    $_SESSION['arrSach'] = $book;
-    echo '<div style="background-color: #dff0d8;border: 1px solid #d6e9c6;padding: 10px;margin-bottom: 10px;">
-    Thêm sách thành công sách '. $tensach . '</div>';
+
+    $book_exist = false;
+    foreach ($books as $b) {
+        if ($b['TenSach'] === $tensach) {
+            $book_exist = true;
+            break;
+        }
+    }
+    if ($book_exist) {
+        echo '<div style="background-color: #f2dede;border: 1px solid #ebccd1;padding: 10px;margin-bottom: 10px;">
+        Lỗi: Sách ' . $tensach . ' đã tồn tại trong danh sách!</div>';
+    } else {
+        $new_book = array(
+            'id' => $id,
+            'TheLoaiSach' => $tentheloai,
+            'TenSach' => $tensach,
+            'TenTacGia' => $tentacgia,
+            'NgayPhatHanh' => $ngayphathanh
+        );
+        $books[] = $new_book;
+        $_SESSION['arrSach'] = $books;
+        echo '<div style="background-color: #dff0d8;border: 1px solid #d6e9c6;padding: 10px;margin-bottom: 10px;">
+    Thêm sách thành công sách ' . $tensach . '</div>';
+    }
 }
 
 // Xóa sách
@@ -148,7 +163,7 @@ if (isset($_POST['edit_book'])) {
     }
     if ($book) {
 ?>
-        <div>
+        <div style="text-align: center;">
             <h2>Cập nhật thể loại</h2>
             <form method="POST" action="">
                 <div>
@@ -165,7 +180,7 @@ if (isset($_POST['edit_book'])) {
                 </div>
                 <div>
                     <label for="ngayphathanh">Ngày phát hành:</label>
-                    <input type="date" id="ngayphathanh" name="ngayphathanh" value="<?= $book['NgayPhatHanh']->format('Y-m-d') ?>">
+                    <input type="date" id="ngayphathanh" name="ngayphathanh" value="<?= date_format($book['NgayPhatHanh'], 'Y-m-d') ?>">
                 </div>
                 <input type="hidden" name="id" value="<?= $book['id'] ?>">
                 <input type="submit" value="Cập nhật" name="update_book">
@@ -184,25 +199,25 @@ if (isset($_POST['edit_book'])) {
     <div class="header">
         <h1>Quản lý sách</h1>
     </div>
-    <?php if(isset($_SESSION['username'])) {
-            ?><p>Xin chào, <?php echo $_SESSION['fullname']; ?><a style="text-decoration: none;" href="logout.php"> Đăng xuất</a></p>
-            <?php } ?>
+    <?php if (isset($_SESSION['username'])) {
+    ?><p>Xin chào, <?php echo $_SESSION['fullname']; ?><a style="text-decoration: none;" href="logout.php"> Đăng xuất</a></p>
+    <?php } ?>
     <div class="search-form">
         <form action="" method="post">
             <label for="keyword">Tìm kiếm tên thể loại: </label>
             <input type="text" id="keyword" name="keyword">
             <button type="submit">Tìm kiếm</button>
         </form>
-    
-    <form method="post" action="">
-        <label for="ngay_bat_dau">Ngày bắt đầu:</label>
-        <input type="date" name="ngay_bat_dau" id="ngay_bat_dau" required>
-        <br>
-        <label for="ngay_ket_thuc">Ngày kết thúc:</label>
-        <input type="date" name="ngay_ket_thuc" id="ngay_ket_thuc" required>
-        <br>
-        <button type="submit">Tìm kiếm theo ngày</button>
-    </form>
+
+        <form method="post" action="">
+            <label for="ngay_bat_dau">Ngày bắt đầu:</label>
+            <input type="date" name="ngay_bat_dau" id="ngay_bat_dau" required>
+            <br>
+            <label for="ngay_ket_thuc">Ngày kết thúc:</label>
+            <input type="date" name="ngay_ket_thuc" id="ngay_ket_thuc" required>
+            <br>
+            <button type="submit">Tìm kiếm theo ngày</button>
+        </form>
     </div>
 
     <div>
@@ -246,9 +261,11 @@ if (isset($_POST['edit_book'])) {
             <div><label for="tensach">Tên sách</label><input type="text" id="tensach" name="tensach" required></div>
             <div><label>Tên tác giả</label><input type="text" id="tentacgia" name="tentacgia" required></div>
             <div><label>Ngày phát hành</label>
-            <input type="date" name="ngayphathanh" required></div>
+                <input type="date" name="ngayphathanh" required>
+            </div>
             <input type="hidden" name="id" value="<?= count($_SESSION['arrSach']) + 1 ?>">
-            <input type="submit" value="Thêm sách" name="add_book">
+            <input style="background-color: #0077be;color: #fff;border: none;border-radius: 5px; cursor: pointer;"
+            type="submit" value="Thêm sách" name="add_book">
         </form>
     </div>
 </body>

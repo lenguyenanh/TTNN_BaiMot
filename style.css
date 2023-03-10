@@ -68,6 +68,15 @@ button[type="submit"] {
     transition: background-color 0.3s ease-in-out;
     width: 100%;
 }
+button[name="delete_category"] {
+  background-color: red;
+}
+button[name="chi-tiet-sach"] {
+  background-color: rgb(12, 126, 19);
+}
+button[name="delete_book"] {
+  background-color: red;
+}
 
 button[type="submit"]:hover {
     background-color: #3e8e41;

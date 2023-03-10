@@ -46,7 +46,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         <form method="POST" action="">
             <div class="form-group">
                 <label for="username">Tên đăng nhập:</label>
-                <input type="text" id="username" name="username" placeholder="Tên đăng nhập" value="nguyenvana1">
+                <input type="text" id="username" name="username" placeholder="Tên đăng nhập" value="nguyenvana2">
             </div>
             <div class="form-group">
                 <label for="password">Mật khẩu:</label>

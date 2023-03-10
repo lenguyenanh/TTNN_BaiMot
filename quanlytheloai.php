@@ -51,7 +51,7 @@ if (isset($_POST['add_category'])) {
     }
     if($exits){
         echo '<div style="background-color: #f2dede;border: 1px solid #ebccd1;padding: 10px;margin-bottom: 10px;">
-        Thể loại đã tồn tại, không thể thêm mới</div>';
+        Lỗi: Thể loại đã tồn tại, không thể thêm mới!</div>';
     }else{
     $arrTheLoaiMoi = array(
         'id' => $id,
@@ -186,7 +186,7 @@ if (isset($_POST['edit_category'])) {
                     <td>
                     <form method="post" action="chitietsach.php">
                         <input type="hidden" name="ten-the-loai" value="<?= $theLoai['tenTL'] ?>">
-                        <button type="submit" >Chi tiết sách</button>
+                        <button type="submit" name="chi-tiet-sach" >Chi tiết sách</button>
                     </form>
                 </td>
                 </tr>
@@ -208,7 +208,8 @@ if (isset($_POST['edit_category'])) {
                 </select>
             </div>
             <input type="hidden" name="id" value="<?= count($_SESSION['arrTheLoai']) + 1 ?>">
-            <input type="submit" value="Thêm thể loại" name="add_category">
+            <input style="background-color: #0077be;color: #fff;border: none;border-radius: 5px; cursor: pointer;" 
+            type="submit" value="Thêm thể loại" name="add_category">
         </form>
     </div>
 </body>
