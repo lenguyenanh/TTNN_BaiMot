@@ -1,33 +1,33 @@
 <?php
 session_start();
-if (!isset($_SESSION['categories'])) {
-    $_SESSION['categories'] = array(
-        array('id' => 1, 'code' => 'TT', 'name' => 'Trinh thám', 'status' => 'hoạt động'),
-        array('id' => 2, 'code' => 'KH', 'name' => 'Khoa học', 'status' => 'hoạt động'),
-        array('id' => 3, 'code' => 'VH', 'name' => 'Văn học', 'status' => 'không hoạt động')
+if (!isset($_SESSION['arrTheLoai'])) {
+    $_SESSION['arrTheLoai'] = array(
+        array('id' => 1, 'maTL' => 'TT', 'tenTL' => 'Trinh thám', 'trangThai' => 'hoạt động'),
+        array('id' => 2, 'maTL' => 'KH', 'tenTL' => 'Khoa học', 'trangThai' => 'hoạt động'),
+        array('id' => 3, 'maTL' => 'VH', 'tenTL' => 'Văn học', 'trangThai' => 'không hoạt động')
     );
 }
 //Tìm kiếm
 if (isset($_POST['keyword'])) {
     $keyword = $_POST['keyword'];
-    $results = array();
-    foreach ($_SESSION['categories'] as $category) {
-        if ($category['name'] === $keyword) {
-            $results[] = $category;
+    $kq = array();
+    foreach ($_SESSION['arrTheLoai'] as $theLoai) {
+        if ($theLoai['tenTL'] === $keyword) {
+            $kq[] = $theLoai;
         }
     }
-    if (count($results) > 0) {
+    if (count($kq) > 0) {
         echo '<h3>Kết quả tìm kiếm:</h3>';
         echo '<ul>';
-        foreach ($results as $category) {
+        foreach ($kq as $theLoai) {
             echo '<li>';
-            echo 'ID: ' . $category['id'] . '<br>';
+            echo 'ID: ' . $theLoai['id'] . '<br>';
             echo '<li>';
-            echo 'Mã thể loại: ' . $category['code'] . '<br>';
+            echo 'Mã thể loại: ' . $theLoai['maTL'] . '<br>';
             echo '<li>';
-            echo 'Tên thể loại: ' . $category['name'] . '<br>';
+            echo 'Tên thể loại: ' . $theLoai['tenTL'] . '<br>';
             echo '<li>';
-            echo 'Trạng thái: ' . $category['status'] . '<br>';
+            echo 'Trạng thái: ' . $theLoai['trangThai'] . '<br>';
             echo '</li>';
         }
         echo '</ul>';
@@ -39,28 +39,27 @@ if (isset($_POST['keyword'])) {
 //Thêm thể loại sách mới
 if (isset($_POST['add_category'])) {
     $id = $_POST['id'];
-    $code = $_POST['code'];
-    $name = $_POST['name'];
-    $status = $_POST['status'];
-    $categories = $_SESSION['categories'];
-    $name_exists = false;
-    foreach ($categories as $key) {
-        if($key['name'] == $name | $key['code'] == $code){
-            $name_exists = true;
+    $maTL = $_POST['maTL'];
+    $tenTL = $_POST['tenTL'];
+    $trangThai = $_POST['trangThai'];
+    //$arrTheLoai = $_SESSION['arrTheLoai'];
+    $exits = false;
+    foreach ($_SESSION['arrTheLoai'] as $theLoai) {
+        if($theLoai['maTL'] == $maTL | $theLoai['tenTL'] == $tenTL){
+            $exits = true;
         }
     }
-    if($name_exists){
+    if($exits){
         echo '<div style="background-color: #f2dede;border: 1px solid #ebccd1;padding: 10px;margin-bottom: 10px;">
         Thể loại đã tồn tại, không thể thêm mới</div>';
     }else{
-    $new_category = array(
+    $arrTheLoaiMoi = array(
         'id' => $id,
-        'code' => $code,
-        'name' => $name,
-        'status' => $status
+        'maTL' => $maTL,
+        'tenTL' => $tenTL,
+        'trangThai' => $trangThai
     );
-    $categories[] = $new_category;
-    $_SESSION['categories'] = $categories;
+    $_SESSION['arrTheLoai'][] = $arrTheLoaiMoi;
     echo '<div style="background-color: #dff0d8;border: 1px solid #d6e9c6;padding: 10px;margin-bottom: 10px;">
     Thêm thể loại thành công</div>';
 }
@@ -69,9 +68,9 @@ if (isset($_POST['add_category'])) {
 // Xóa thể loại
 if (isset($_POST['delete_category'])) {
     $id = $_POST['id'];
-    foreach ($_SESSION['categories'] as $key => $value) {
+    foreach ($_SESSION['arrTheLoai'] as $key => $value) {
         if ($value['id'] == $id) {
-            unset($_SESSION['categories'][$key]);
+            unset($_SESSION['arrTheLoai'][$key]);
             echo '<div style="background-color: #dff0d8;border: 1px solid #d6e9c6;padding: 10px;margin-bottom: 10px;">
             Xóa thể loại thành công</div>';
             break;
@@ -82,14 +81,14 @@ if (isset($_POST['delete_category'])) {
 // Cập nhật thể loại
 if (isset($_POST['update_category'])) {
     $id = $_POST['id'];
-    $code = $_POST['code'];
-    $name = $_POST['name'];
-    $status = $_POST['status'];
-    foreach ($_SESSION['categories'] as &$category) {
-        if ($category['id'] == $id) {
-            $category['code'] = $code;
-            $category['name'] = $name;
-            $category['status'] = $status;
+    $maTL = $_POST['maTL'];
+    $tenTL = $_POST['tenTL'];
+    $trangThai = $_POST['trangThai'];
+    foreach ($_SESSION['arrTheLoai'] as &$theLoai) {
+        if ($theLoai['id'] == $id) {
+            $theLoai['maTL'] = $maTL;
+            $theLoai['tenTL'] = $tenTL;
+            $theLoai['trangThai'] = $trangThai;
             echo '<div style="background-color: #dff0d8;border: 1px solid #d6e9c6;padding: 10px;margin-bottom: 10px;">
             Cập nhật thể loại thành công.</div>';
             break;
@@ -100,35 +99,35 @@ if (isset($_POST['update_category'])) {
 // Hiển thị form cập nhật thể loại
 if (isset($_POST['edit_category'])) {
     $id = $_POST['id'];
-    $category = null;
-    foreach ($_SESSION['categories'] as $c) {
-        if ($c['id'] == $id) {
-            $category = $c;
+    $theLoai = null;
+    foreach ($_SESSION['arrTheLoai'] as $category) {
+        if ($category['id'] == $id) {
+            $theLoai = $category;
             break;
         }
     }
-    if ($category) {
+    if ($theLoai) {
 ?>
         <div>
             <h2>Cập nhật thể loại</h2>
             <form method="POST" action="">
                 <div>
-                    <label for="code">Mã thể loại:</label>
-                    <input type="text" id="code" name="code" value="<?= $category['code'] ?>">
+                    <label for="maTL">Mã thể loại:</label>
+                    <input type="text" id="maTL" name="maTL" value="<?= $theLoai['maTL'] ?>">
                 </div>
                 <div>
-                    <label for="name">Tên thể loại:</label>
-                    <input type="text" id="name" name="name" value="<?= $category['name'] ?>">
+                    <label for="tenTL">Tên thể loại:</label>
+                    <input type="text" id="tenTL" name="tenTL" value="<?= $theLoai['tenTL'] ?>">
                 </div>
                 <div>
-                    <label for="status">Trạng thái:</label>
-                    <select id="status" name="status" style="padding: 8px;font-size: 16px;border-radius: 5px;border: 1px solid #ccc;outline: none;background-color: #f9f9f9;">
-                        <option style="font-size: 16px;" value="hoạt động" <?= $category['status'] == 'hoạt động' ? 'selected' : '' ?>>Hoạt động</option>
-                        <option style="font-size: 16px;" value="không hoạt động" <?= $category['status'] == 'không hoạt động' ? 'selected' : '' ?>>Không hoạt động</option>
+                    <label for="trangThai">Trạng thái:</label>
+                    <select id="trangThai" name="trangThai" style="padding: 8px;font-size: 16px;border-radius: 5px;border: 1px solid #ccc;outline: none;background-color: #f9f9f9;">
+                        <option style="font-size: 16px;" value="hoạt động" <?= $theLoai['trangThai'] == 'hoạt động' ? 'selected' : '' ?>>Hoạt động</option>
+                        <option style="font-size: 16px;" value="không hoạt động" <?= $theLoai['trangThai'] == 'không hoạt động' ? 'selected' : '' ?>>Không hoạt động</option>
                     </select>
                 </div>
 
-                <input type="hidden" name="id" value="<?= $category['id'] ?>">
+                <input type="hidden" name="id" value="<?= $theLoai['id'] ?>">
                 <input type="submit" value="Cập nhật" name="update_category">
             </form>
         </div>
@@ -166,28 +165,28 @@ if (isset($_POST['edit_category'])) {
                 <th>Sửa</th>
                 <th>Chi tiết sách</th>
             </tr>
-            <?php foreach ($_SESSION['categories'] as $key) { ?>
+            <?php foreach ($_SESSION['arrTheLoai'] as $theLoai) { ?>
                 <tr>
-                    <td><?= $key['id'] ?></td>
-                    <td><?= $key['code'] ?></td>
-                    <td><?= $key['name'] ?></td>
-                    <td><?= $key['status'] ?></td>
+                    <td><?= $theLoai['id'] ?></td>
+                    <td><?= $theLoai['maTL'] ?></td>
+                    <td><?= $theLoai['tenTL'] ?></td>
+                    <td><?= $theLoai['trangThai'] ?></td>
                     <td>
                         <form method="post">
-                            <input type="hidden" name="id" value="<?= $key['id'] ?>">
+                            <input type="hidden" name="id" value="<?= $theLoai['id'] ?>">
                             <button type="submit" name="delete_category">Xóa</button>
                         </form>
                     </td>
                     <td>
                         <form method="post">
-                            <input type="hidden" name="id" value="<?= $key['id'] ?>">
+                            <input type="hidden" name="id" value="<?= $theLoai['id'] ?>">
                             <button type="submit" name="edit_category">Sửa</button>
                         </form>
                     </td>
                     <td>
                     <form method="post" action="chitietsach.php">
-                        <input type="hidden" name="category_name" value="<?= $key['name'] ?>">
-                        <button type="submit" name="view_books">Chi tiết sách</button>
+                        <input type="hidden" name="ten-the-loai" value="<?= $theLoai['tenTL'] ?>">
+                        <button type="submit" >Chi tiết sách</button>
                     </form>
                 </td>
                 </tr>
@@ -197,18 +196,18 @@ if (isset($_POST['edit_category'])) {
 
     <div class="form-them">
     <h2>Thêm thể loại sách</h2>
-        <form method="POST" action="quanlytheloai.php">
-            <div><label>Mã thể loại:</label>
-                <input type="text" name="code" required>
+        <form method="POST" action="">
+            <div><label for="maTL">Mã thể loại:</label>
+                <input type="text" id="maTL" name="maTL" required>
             </div>
-            <div><label>Tên thể loại</label><input type="text" name="name" required></div>
-            <div><label>Trạng thái</label>
-                <select name="status" id="" required>
+            <div><label for="tenTL">Tên thể loại</label><input type="text" id="tenTL" name="tenTL" required></div>
+            <div><label for="trangThaii">Trạng thái</label>
+                <select name="trangThai" id="trangThaii" required>
                     <option value="hoạt động">Hoạt động</option>
                     <option value="không hoạt động">Không hoạt động</option>
                 </select>
             </div>
-            <input type="hidden" name="id" value="<?= count($_SESSION['categories']) + 1 ?>">
+            <input type="hidden" name="id" value="<?= count($_SESSION['arrTheLoai']) + 1 ?>">
             <input type="submit" value="Thêm thể loại" name="add_category">
         </form>
     </div>
